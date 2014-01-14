@@ -6,153 +6,182 @@ import java.util.ArrayList;
 import com.carrefour.entity.POSTransaction;
 import com.carrefour.entity.Product;
 import com.carrefour.file.IDCReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class IDCOperation {
 
-	public ArrayList<String> findCashNumbers(IDCReader idcReader) {
+    public ArrayList<String> findCashNumbers(IDCReader idcReader)
+    {
+        try
+        {
+            String line;
 
-		String line;
+            boolean contains = true;
+            line = idcReader.readLine();
+            String cashNo = line.split(":")[1];
 
-		try {
-			boolean contains = true;
-			line = idcReader.readLine();
-			String cashNo = line.split(":")[1];
+            ArrayList<String> cashNoList = new ArrayList<String>();
 
-			ArrayList<String> cashNoList = new ArrayList<String>();
+            cashNoList.add(cashNo);
+            System.out.println(cashNo);
 
-			cashNoList.add(cashNo);
-			System.out.println(cashNo);
+            while (line != null)
+            {
 
-			while (line != null) {
+                contains = false;
 
-				contains = false;
+                for (int i = 0; i < cashNoList.size(); i++)
+                {
+                    if (cashNoList.get(i).equals(cashNo))
+                    {
+                        line = idcReader.readLine();
 
-				for (int i = 0; i < cashNoList.size(); i++) {
-					if (cashNoList.get(i).equals(cashNo)) {
-						line = idcReader.readLine();
+                        if (line == null)
+                        {
+                            continue;
+                        }
 
-						if (line == null)
-							continue;
+                        cashNo = line.split(":")[1];
 
-						cashNo = line.split(":")[1];
+                        if (cashNo.equals("801"))
+                        {
+                            break;
+                        }
 
-						if (cashNo.equals("801"))
-							break;
+                        contains = true;
+                        break;
+                    }
 
-						contains = true;
-						break;
-					}
+                }
 
-				}
+                if (cashNo.equals("801"))
+                {
+                    break;
+                } else if (contains)
+                {
+                    continue;
+                } else
+                {
 
-				if (cashNo.equals("801"))
-					break;
-				else if (contains) {
-					continue;
-				} else {
+                    cashNoList.add(cashNo);
+                    System.out.println(cashNo);
+                }
 
-					cashNoList.add(cashNo);
-					System.out.println(cashNo);
-				}
+            }
 
-			}
+        } catch (IOException ex)
+        {
+            Logger.getLogger(IDCOperation.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        return null;
+    }
 
-		return null;
-	}
+    public String findStoreId(IDCReader idcReader) throws Exception
+    {
 
-	public String findStoreId(IDCReader idcReader) throws Exception {
+        String line = idcReader.readLine();
+        String storeId = line.split(":")[0];
+        String previousStoreId = storeId;
 
-		String line = idcReader.readLine();
-		String storeId = line.split(":")[0];
-		String previousStoreId = storeId;
+        while (line != null)
+        {
 
-		while (line != null) {
+            // System.out.println(storeId);
+            if (storeId.equals("FIS ") || storeId.equals("FAT "))
+            {
 
-			// System.out.println(storeId);
-			if (storeId.equals("FIS ") || storeId.equals("FAT ")) {
+                line = idcReader.readLine();
+                storeId = line.split(":")[0];
+                continue;
 
-				line = idcReader.readLine();
-				storeId = line.split(":")[0];
-				continue;
+            } else if (!storeId.equals(previousStoreId))
+            {
 
-			} else if (!storeId.equals(previousStoreId)) {
+                throw new Exception(
+                        "Dosya da farklı mağaza numaraları mevcut!!");
 
-				throw new Exception(
-						"Dosya da farklı mağaza numaraları mevcut!!");
+            }
 
-			}
+            // System.out.println(line);
+            previousStoreId = storeId;
+            line = idcReader.readLine();
 
-			// System.out.println(line);
-			previousStoreId = storeId;
-			line = idcReader.readLine();
+            if (line == null)
+            {
+                continue;
+            }
 
-			if (line == null)
-				continue;
+            storeId = line.split(":")[0];
+        }
 
-			storeId = line.split(":")[0];
-		}
+        return storeId;
+    }
 
-		return storeId;
-	}
+    public POSTransaction posTransactions(IDCReader idcReader)
+            throws IOException
+    {
+        String line = idcReader.readLine();
+        String[] lineArray;
+        int headerLine = 0;
+        int fatLine = 0;
+        String transactionNo = null;
+        String cashNumber = null;
 
-	public POSTransaction posTransactions(IDCReader idcReader)
-			throws IOException {
-		String line = idcReader.readLine();
-		String[] lineArray;
-		int headerLine = 0; 
-		int fatLine = 0;
-		String transactionNo = null;
-		String cashNumber = null;
+        lineArray = line.split(":");
+        String transactionType = lineArray[6];
 
-		lineArray = line.split(":");
-		String transactionType = lineArray[6];
+        while (line != null)
+        {
 
-		
-		while (line != null) {
+            lineArray = line.split(":");
+            transactionType = lineArray[6];
 
-			
-			lineArray = line.split(":");
-			transactionType = lineArray[6];
-			
-			if (transactionType.equals("H")) {
+            if (transactionType.equals("H"))
+            {
 //				System.out.println(lineArray[4]);
-				headerLine = idcReader.currentLineNumber();
-				transactionNo = lineArray[4];
-				cashNumber = lineArray[1];
+                headerLine = idcReader.currentLineNumber();
+                transactionNo = lineArray[4];
+                cashNumber = lineArray[1];
 //				System.out.println(headerLine);
-				System.out.println(line);
+                System.out.println(line);
 //				System.out.println(cashNumber +"   ||   "+transactionNo);
-			}
-			else if((lineArray[0].equals("FAT ") || lineArray[0].equals("FIS ")))
-			{
-				if(cashNumber.equals(lineArray[1]) && transactionNo.equals(lineArray[4]))
-				{
-					
-					this.productTransactions(headerLine, fatLine, idcReader);
+            } else if ((lineArray[0].equals("FAT ") || lineArray[0].equals("FIS ")))
+            {
+                if (cashNumber.equals(lineArray[1]) && transactionNo.equals(lineArray[4]))
+                {
 
-					fatLine = idcReader.currentLineNumber();
-					System.out.println(line);
-					
-				}
-			}
-			
-			
-			line = idcReader.readLine();
-		}
-		
+                    this.productTransactions(headerLine, fatLine, idcReader);
 
-		return null;
-	}
-	
-	private Product productTransactions(int headerLine, int fatLine, IDCReader idcReader) throws IOException{
-		
-		for(int i = headerLine; i<fatLine; i++)
-			System.out.println(idcReader.readLine(i));
-		return null;
-	}
+                    fatLine = idcReader.currentLineNumber();
+                    
+                    this.productTransactions(headerLine, fatLine, idcReader);
+                    System.out.println(line);
+                    
+                    idcReader.setLineNumber(fatLine);
+
+                }
+            }
+
+            line = idcReader.readLine();
+        }
+
+        return null;
+    }
+
+    private Product productTransactions(int headerLine, int fatLine, IDCReader idcReader) throws IOException
+    {
+        String [] transactionLine;
+        
+        for (int i = headerLine; i < fatLine; i++)
+        {
+            transactionLine = idcReader.readLine(i).split(":");
+            
+            
+            if(transactionLine[6].charAt(0) == 'S')
+                System.out.println(transactionLine[8]);
+        }
+        return null;
+    }
 }
