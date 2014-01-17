@@ -155,10 +155,10 @@ public class IDCOperation {
                     this.productTransactions(headerLine, fatLine, idcReader);
 
                     fatLine = idcReader.currentLineNumber();
-                    
+
                     this.productTransactions(headerLine, fatLine, idcReader);
                     System.out.println(line);
-                    
+
                     idcReader.setLineNumber(fatLine);
 
                 }
@@ -172,15 +172,21 @@ public class IDCOperation {
 
     private Product productTransactions(int headerLine, int fatLine, IDCReader idcReader) throws IOException
     {
-        String [] transactionLine;
-        
+        String[] transactionLine;
+        Product product;
+
         for (int i = headerLine; i < fatLine; i++)
         {
             transactionLine = idcReader.readLine(i).split(":");
-            
-            
-            if(transactionLine[6].charAt(0) == 'S')
-                System.out.println(transactionLine[8]);
+
+            if (transactionLine[6].charAt(0) == 'S')
+            {
+                System.out.println("###########################");
+                System.out.println("VAT     :%" + ((int)transactionLine[6].charAt(1)- 64));
+                System.out.println("Barcode :" + transactionLine[8].substring(0, 16).trim());
+                System.out.println("Unit    :" + transactionLine[8].substring(17, 25));
+                System.out.println("Price   :" + transactionLine[8].substring(26));
+            }
         }
         return null;
     }

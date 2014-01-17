@@ -52,6 +52,11 @@ public class IDCReader {
 		return lineNum;
 	}
 
+        public void setLineNumber(int lineNumber)
+        {
+            lr.setLineNumber(lineNumber);
+        }
+        
 	public File getHocidc() {
 		return hocidc;
 	}
