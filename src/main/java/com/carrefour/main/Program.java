@@ -12,7 +12,8 @@ public class Program {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		File hocidc = new File("/Users/onurerdogan/Desktop/HOCIDC.001");
+                File hocidc = new File("C:\\Users\\erdoganon\\Desktop\\HOCIDC.001");
+//		File hocidc = new File("/Users/onurerdogan/Desktop/HOCIDC.001");
 
 		try {
 //			IDCReader idcReader = new IDCReader(hocidc);
