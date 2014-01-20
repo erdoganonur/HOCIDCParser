@@ -7,11 +7,20 @@ import com.carrefour.entity.POSTransaction;
 import com.carrefour.entity.Product;
 import com.carrefour.file.IDCReader;
 import com.carrefour.util.FormatDouble;
+<<<<<<< HEAD
+=======
+import java.util.logging.Level;
+import java.util.logging.Logger;
+>>>>>>> e982a3c7f270f2c6c5235bd475efd2567e251a7a
 
 public class IDCOperation {
 
     public ArrayList<String> findCashNumbers(IDCReader idcReader) {
+<<<<<<< HEAD
             
+=======
+        try {
+>>>>>>> e982a3c7f270f2c6c5235bd475efd2567e251a7a
             String line;
 
             boolean contains = true;
@@ -59,7 +68,13 @@ public class IDCOperation {
 
             }
 
+<<<<<<< HEAD
         
+=======
+        } catch (IOException ex) {
+            Logger.getLogger(IDCOperation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+>>>>>>> e982a3c7f270f2c6c5235bd475efd2567e251a7a
 
         return null;
     }
@@ -114,6 +129,7 @@ public class IDCOperation {
         
         while (line != null) {
             
+<<<<<<< HEAD
             lineArray = line.split(":");
             transactionType = lineArray[6].charAt(0);
 
@@ -123,6 +139,21 @@ public class IDCOperation {
                 cashNumber = lineArray[1];
                 System.out.println("\n"+line);
 
+=======
+            System.out.println("Line Number ["+idcReader.currentLineNumber()+"]"+line);
+            lineArray = line.split(":");
+            transactionType = lineArray[6].charAt(0);
+//            System.out.println(""+transactionType);
+
+            if (transactionType ==  'H') {
+//				System.out.println(lineArray[4]);
+                headerLine = idcReader.currentLineNumber();
+                transactionNo = lineArray[4];
+                cashNumber = lineArray[1];
+//				System.out.println(headerLine);
+//                System.out.println(line);
+//				System.out.println(cashNumber +"   ||   "+transactionNo);
+>>>>>>> e982a3c7f270f2c6c5235bd475efd2567e251a7a
             } else if ((lineArray[0].equals("FAT ") || lineArray[0].equals("FIS "))) {
                 if (cashNumber.equals(lineArray[1]) && transactionNo.equals(lineArray[4])) {
 
@@ -131,10 +162,19 @@ public class IDCOperation {
                     fatLine = idcReader.currentLineNumber();
 
                     this.productTransactions(headerLine, fatLine, idcReader);
+<<<<<<< HEAD
 
                     idcReader.setLineNumber(fatLine);
                     
                     System.out.println(line);
+=======
+                    //System.out.println(line);
+
+                    idcReader.setLineNumber(fatLine);
+                    line = idcReader.readLine();
+                    //System.out.println(line);
+                    continue;
+>>>>>>> e982a3c7f270f2c6c5235bd475efd2567e251a7a
                 }
             }
 
@@ -162,12 +202,15 @@ public class IDCOperation {
                 }
                 System.out.println("Price   :" + transactionLine[8].substring(26));
                 System.out.println("Price   :" + FormatDouble.formatFromString(transactionLine[8].substring(26)));
+<<<<<<< HEAD
             }
             else if(transactionLine[6].charAt(0) == 'C')
             {
                 System.out.println("Barcode :" + transactionLine[8].trim());
                 System.out.println("Discount Price   :" + transactionLine[9].substring(8));
                 System.out.println("Discount Price   :" + FormatDouble.formatFromString(transactionLine[9].substring(8)));
+=======
+>>>>>>> e982a3c7f270f2c6c5235bd475efd2567e251a7a
             }
         }
         return null;

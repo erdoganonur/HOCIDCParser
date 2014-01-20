@@ -9,6 +9,7 @@ import com.carrefour.operation.IDCOperation;
 
 public class Program {
 
+<<<<<<< HEAD
     public static void main(String[] args)
     {
         // TODO Auto-generated method stub
@@ -20,6 +21,17 @@ public class Program {
 
         try
         {
+=======
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+
+//        File hocidc = new File("C:\\Users\\erdoganon\\Desktop\\HOCIDC.001");
+        File hocidc = new File("C:\\Users\\erdoganon\\Desktop\\S_IDC\\S_IDC001.DAT");
+//              File hocidc = new File("\\\\10.181.81.1\\ccc\\server\\data\\S_IDC001.DAT");
+//		File hocidc = new File("/Users/onurerdogan/Desktop/HOCIDC.001");
+
+        try {
+>>>>>>> e982a3c7f270f2c6c5235bd475efd2567e251a7a
 //			IDCReader idcReader = new IDCReader(hocidc);
 //
 //			String line = idcReader.readLine();
@@ -45,6 +57,7 @@ public class Program {
             idcOperation.posTransactions(new IDCReader(hocidc));
             System.out.println("TOTAL TIME :" + total + " ms");
 
+<<<<<<< HEAD
         } catch (FileNotFoundException e)
         {
             // TODO Auto-generated catch block
@@ -55,6 +68,15 @@ public class Program {
             e.printStackTrace();
         } catch (Exception e)
         {
+=======
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+>>>>>>> e982a3c7f270f2c6c5235bd475efd2567e251a7a
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
